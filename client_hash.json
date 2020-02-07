@@ -1,0 +1,45 @@
+[
+    {
+        "info":{
+            "hash_cliente": "valor",
+            "candidato":"valor"
+        },
+        "contas":[
+            {
+                "hash_cliente": "valor",
+                "cookie":"valor",
+                "email":"valor",
+                "senha":"valor",
+                "proxy":"1212.121.121.12:2121",
+                "lang":"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+                "agent":"Mozilla/5.0 (X11; U; Linux x86_64; en-us) AppleWebKit/531.2+ (KHTML, like Gecko) Version/5.0 Safari/531.2",
+                "last_used":"YYYY-mm-dd",
+                "ativa":true
+            }
+        ],
+        "usuarios":[
+            {
+                "hash_usuario": "valor",
+                "hash_cliente": "valor",
+                "link_fb":"valor",
+                "nome":"valor",
+                "intents":["intent1", "intent2", "etc.."],
+                "analizado":true,
+                "amigo":false
+            }
+        ],
+        "nomes":[
+            {
+                "nome":"valor",
+                "status":1
+            }
+        ],
+        "intents":[
+            {
+                "intent": "",
+                "regex": "/regex1/",
+                "message": "valor"
+            }
+        ]
+    }
+]

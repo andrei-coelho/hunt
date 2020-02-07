@@ -1,0 +1,17 @@
+{
+  "name": "hunt",
+  "version": "1.0.0",
+  "description": "bot para scrapy",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Andrei Coelho",
+  "license": "MIT",
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "jimp": "^0.9.3",
+    "node-tesseract-ocr": "^1.0.0",
+    "request": "^2.88.0"
+  }
+}
