@@ -1,0 +1,1 @@
+contém arquivos de cookies em json. Cada arquivo tem o hash_id da conta utilizada.

@@ -2,7 +2,8 @@
     {
         "info":{
             "hash_cliente": "valor",
-            "candidato":"valor"
+            "candidato":"valor",
+            "cidade":"valor"
         },
         "contas":[
             {

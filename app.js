@@ -40,7 +40,7 @@ var fs   = require('fs'),
     path = require('path'),
     bot  = require('./modules/bot_control');
 
-var log = require('./helpers/log');
+var cli  = require('./modules/hunt_cli');
 
 global.appRoot = path.resolve(__dirname);
 
@@ -55,9 +55,26 @@ fs.readFile("./json/conf.json", (e, data) => {
                 let conf = JSON.parse(data);
                 bot.start(conf);
                 break;
+            case "test":
             default:
+
+                // para testes de modulos etc..
+             
+                cli("cookiejar", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36")
+                .search('maria', 'eyJjaXR5Ijoie1wibmFtZVwiOlwidXNlcnNfbG9jYXRpb25cIixcImFyZ3NcIjpcIjExMjA0NzM5ODgxNDY5N1wifSJ9',
+                (error, data, stderr) => {
+                    if(error) throw error;
+                    console.log(data);
+                    
+                });
+                
                 break;
         }
 
     }
 });
+
+// phantomjs C:\\node-projects\\hunt\\cli\\search.js 'cookiejar' 'https://www.facebook.com/search/people/?q=maria&epa=FILTERS&filters=eyJjaXR5Ijoie1wibmFtZVwiOlwidXNlcnNfbG9jYXRpb25cIixcImFyZ3NcIjpcIjExMjA0NzM5ODgxNDY5N1wifSJ9'
+// phantomjs C:\\node-projects\\hunt\\cli\\search.js 'C:\\node-projects\\hunt\\json\\cookies\\cookiejar.json' 'https://www.facebook.com/search/people/?q=maria&epa=FILTERS&filters=eyJjaXR5Ijoie1wibmFtZVwiOlwidXNlcnNfbG9jYXRpb25cIixcImFyZ3NcIjpcIjExMjA0NzM5ODgxNDY5N1wifSJ9' 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36'
+
+// MTcxNj@741
