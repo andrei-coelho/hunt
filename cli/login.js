@@ -1,16 +1,22 @@
 
-"use strict";
+var args = require('system').args;
+
 var webPage = require('webpage');
 var page = webPage.create();
 var fs = require('fs');
-var CookieJar = "../json/cookies/cookiejar.json";
+var CookieJar = args[1]+".json";
 var pageResponses = {};
+var url = args[2];
+var email = args[5];
+var pass = args[6];
 
-page.settings.userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36';
-page.settings.javascriptEnabled = true;
-page.settings.loadImages = true;
 phantom.cookiesEnabled = true;
 phantom.javascriptEnabled = true;
+
+page.customHeaders = {'Accept-Language' : args[4]};
+page.settings.userAgent = args[3];
+page.settings.javascriptEnabled = true;
+page.settings.loadImages = true;
 
 var login = false;
 
@@ -25,10 +31,63 @@ if(fs.isFile(CookieJar)){
     login = true;
 }
 
-if(!login){
-    page.evaluate(function() {
-        document.querySelector("input[name='email']").value = "andreifcoelho@gmail.com";
-        document.querySelector("input[name='pass']").value = "mushmush123";
-        document.querySelector("#login_form").submit();
-    });
-}
+page.open(url, function(status) {
+    
+    if ( status === "success" ) {
+        page.render("parte1.jpg");
+        console.log("entrou");
+        if(!login){
+            page.evaluate(function(email, pass) {
+                document.querySelector("input[name='email']").value = email;
+                document.querySelector("input[name='pass']").value = pass;
+                document.querySelector("#login_form").submit();
+            }, email, pass);
+            setTimeout(function(){
+                page.render("parte2.jpg");
+                var test1 = page.evaluate(function(){
+                    return document.querySelector("form[action='/search/top/']")
+                })
+                if(test1) console.log(true);
+                else console.log(false);
+                phantom.exit();
+            }, 5000);
+        } 
+        else {
+            var test1 = page.evaluate(function(){
+                return document.querySelector("form[action='/search/top/']")
+            })
+            var other = false;
+            if(test1){
+                console.log(true);
+            } 
+            else {
+                other = true;
+                page.evaluate(function(email, pass) {
+                    document.querySelector("input[name='email']").value = email;
+                    document.querySelector("input[name='pass']").value = pass;
+                    document.querySelector("#login_form").submit();
+                }, email, pass);
+            }
+            page.evaluate(function() {
+                document.querySelector('._lp3').style.cssText = "display:none";
+            })
+            setTimeout(function(){
+            
+                page.render("parte5.jpg");
+                if(other){
+                    var test2 = page.evaluate(function(){
+                        return document.querySelector("form[action='/search/top/']")
+                    })
+                    if(test2) console.log(true);
+                    else console.log(false);
+                }
+                phantom.exit();
+            }, 10000);
+        }
+
+    }
+
+})
+
+
+

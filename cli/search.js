@@ -8,11 +8,14 @@ var CookieJar = args[1]+".json";
 var pageResponses = {};
 var url = args[2];
 
+phantom.cookiesEnabled = true;
+phantom.javascriptEnabled = true;
+
+page.customHeaders = {'Accept-Language' : args[4]};
 page.settings.userAgent = args[3];
 page.settings.javascriptEnabled = true;
 page.settings.loadImages = false;
-phantom.cookiesEnabled = true;
-phantom.javascriptEnabled = true;
+
 page.onResourceReceived = function(response) {
     pageResponses[response.url] = response.status;
     fs.write(CookieJar, JSON.stringify(phantom.cookies), "w");
@@ -21,13 +24,15 @@ Array.prototype.forEach.call(JSON.parse(fs.read(CookieJar)), function(x){
     phantom.addCookie(x);
 })
 
-page.open(url, function(status) {
+page.open("https://www.facebook.com/search/people/?q=ricardo&epa=FILTERS&filters=eyJjaXR5Ijoie1wibmFtZVwiOlwidXNlcnNfbG9jYXRpb25cIixcImFyZ3NcIjpcIjExMjA0NzM5ODgxNDY5N1wifSJ9", function(status) {
 
     if ( status === "success" ) {
+        console.log("entrou");
         
         page.viewportSize = { width: 1920, height: 1080 };
-
+        page.render("test.png");
         var index = 3000;
+        
         var interval = setInterval(function () {
 
             if(index > 30000){

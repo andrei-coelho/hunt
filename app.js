@@ -48,33 +48,24 @@ fs.readFile("./json/conf.json", (e, data) => {
 
     if (e) throw e;
 
-    if(process.argv[2]){
+    switch (process.argv[2]) {
+        case "start":
+            let conf = JSON.parse(data);
+            bot.start(conf);
+            break;
+        case "test":
+        default:
 
-        switch (process.argv[2]) {
-            case "start":
-                let conf = JSON.parse(data);
-                bot.start(conf);
-                break;
-            case "test":
-            default:
-
-                // para testes de modulos etc..
-             
-                cli("cookiejar", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36")
-                .search('maria', 'eyJjaXR5Ijoie1wibmFtZVwiOlwidXNlcnNfbG9jYXRpb25cIixcImFyZ3NcIjpcIjExMjA0NzM5ODgxNDY5N1wifSJ9',
-                (error, data, stderr) => {
-                    if(error) throw error;
-                    console.log(data);
-                    
-                });
-                
-                break;
-        }
-
+            // para testes de modulos etc..
+            cli("cookiejar", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0", "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7")
+            .login("andreifcoelho@gmail.com", "MTcxNj_741", (error, data, stderr) => {
+                if(error) throw error;
+                console.log(data);
+            });
+            
+        break;
     }
 });
 
-// phantomjs C:\\node-projects\\hunt\\cli\\search.js 'cookiejar' 'https://www.facebook.com/search/people/?q=maria&epa=FILTERS&filters=eyJjaXR5Ijoie1wibmFtZVwiOlwidXNlcnNfbG9jYXRpb25cIixcImFyZ3NcIjpcIjExMjA0NzM5ODgxNDY5N1wifSJ9'
-// phantomjs C:\\node-projects\\hunt\\cli\\search.js 'C:\\node-projects\\hunt\\json\\cookies\\cookiejar.json' 'https://www.facebook.com/search/people/?q=maria&epa=FILTERS&filters=eyJjaXR5Ijoie1wibmFtZVwiOlwidXNlcnNfbG9jYXRpb25cIixcImFyZ3NcIjpcIjExMjA0NzM5ODgxNDY5N1wifSJ9' 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36'
+// phantomjs search.js "C:\node-projects\hunt\json\cookies\cookiejar" "https://www.facebook.com/search/people/?q=ana&epa=SERP_TAB" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36" "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"
 
-// MTcxNj@741
