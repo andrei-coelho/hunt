@@ -7,8 +7,7 @@
 
 var cmd = require('node-cmd');
 
-module.exports = 
-function(cookie, agent, lang){
+module.exports = function(cookie, agent, lang){
 //function(cookie, agent, lang, ip, port){
 
     var url_fb = "https://www.facebook.com/",
@@ -25,13 +24,13 @@ function(cookie, agent, lang){
         args.forEach(arg => strArgs += " \""+arg+"\"");
 
         var cl = 'phantomjs '+arquivo+strArgs;
-        console.log(cl);
-     
+        //console.log(cl);
+        
         cmd.get(cl, (error, data, stderr) => {
             cbk(error, data, stderr)
         });
        
-   
+       
     }
 
     return {
@@ -49,11 +48,14 @@ function(cookie, agent, lang){
             }, [email, pass]);
         },
 
-        friends : () => {
-            //
+        scrapy : (link, callback) => {
+            let urlFinal = "\""+url_fb+link+"\"";
+            call_file("scrapy.js", urlFinal, (error, data, stderr) => {
+                callback(error, data, stderr);
+            });
         },
 
-        scrapy : () => {
+        friends : () => {
             //
         }
 

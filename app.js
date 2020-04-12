@@ -57,11 +57,26 @@ fs.readFile("./json/conf.json", (e, data) => {
         default:
 
             // para testes de modulos etc..
-            cli("cookiejar", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0", "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7")
-            .login("andreifcoelho@gmail.com", "MTcxNj_741", (error, data, stderr) => {
+            
+            cli("cookiejar", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36")
+           
+            /*
+            .login("andreifcoelho@gmail.com", "MTcxNj741", (error, data, stderr) => {
                 if(error) throw error;
                 console.log(data);
             });
+            
+            .scrapy("maria.perroni.9", (error, data, stderr) => {
+                if(error) throw error;
+                console.log(data);
+            });
+            */
+            .search("ana", (error, data, stderr) => {
+                if(error) throw error;
+                console.log(data);
+            });
+             
+            
             
         break;
     }

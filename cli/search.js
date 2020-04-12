@@ -1,6 +1,5 @@
-
+"use strict";
 var args = require('system').args;
-
 var webPage = require('webpage');
 var page = webPage.create();
 var fs = require('fs');
@@ -10,11 +9,9 @@ var url = args[2];
 
 phantom.cookiesEnabled = true;
 phantom.javascriptEnabled = true;
-
-page.customHeaders = {'Accept-Language' : args[4]};
 page.settings.userAgent = args[3];
 page.settings.javascriptEnabled = true;
-page.settings.loadImages = false;
+page.settings.loadImages = true;
 
 page.onResourceReceived = function(response) {
     pageResponses[response.url] = response.status;
@@ -24,7 +21,9 @@ Array.prototype.forEach.call(JSON.parse(fs.read(CookieJar)), function(x){
     phantom.addCookie(x);
 })
 
-page.open("https://www.facebook.com/search/people/?q=ricardo&epa=FILTERS&filters=eyJjaXR5Ijoie1wibmFtZVwiOlwidXNlcnNfbG9jYXRpb25cIixcImFyZ3NcIjpcIjExMjA0NzM5ODgxNDY5N1wifSJ9", function(status) {
+// phantomjs C:\node-projects\hunt\cli\search.js "C:\node-projects\hunt\json\cookies\cookiejar" "https://www.facebook.com/search/people/?q=ana&epa=SERP_TAB" "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0" "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"
+
+page.open("https://www.facebook.com/search/people/?q=ana&epa=FILTERS&filters=eyJjaXR5Ijoie1wibmFtZVwiOlwidXNlcnNfbG9jYXRpb25cIixcImFyZ3NcIjpcIjExMjA0NzM5ODgxNDY5N1wifSJ9", function(status) {
 
     if ( status === "success" ) {
         console.log("entrou");
@@ -77,3 +76,4 @@ page.open("https://www.facebook.com/search/people/?q=ricardo&epa=FILTERS&filters
         }, 4000); 
     }
 });
+

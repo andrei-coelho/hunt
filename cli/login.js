@@ -1,5 +1,6 @@
-
+"use strict";
 var args = require('system').args;
+console.log(args);
 
 var webPage = require('webpage');
 var page = webPage.create();
@@ -12,8 +13,6 @@ var pass = args[6];
 
 phantom.cookiesEnabled = true;
 phantom.javascriptEnabled = true;
-
-page.customHeaders = {'Accept-Language' : args[4]};
 page.settings.userAgent = args[3];
 page.settings.javascriptEnabled = true;
 page.settings.loadImages = true;
@@ -32,10 +31,8 @@ if(fs.isFile(CookieJar)){
 }
 
 page.open(url, function(status) {
-    
+    page.viewportSize = { width: 1920, height: 1080 };
     if ( status === "success" ) {
-        page.render("parte1.jpg");
-        console.log("entrou");
         if(!login){
             page.evaluate(function(email, pass) {
                 document.querySelector("input[name='email']").value = email;
@@ -57,23 +54,19 @@ page.open(url, function(status) {
                 return document.querySelector("form[action='/search/top/']")
             })
             var other = false;
-            if(test1){
-                console.log(true);
-            } 
-            else {
-                other = true;
+            if(!test1){
+               other = true;
                 page.evaluate(function(email, pass) {
                     document.querySelector("input[name='email']").value = email;
                     document.querySelector("input[name='pass']").value = pass;
                     document.querySelector("#login_form").submit();
                 }, email, pass);
             }
+
             page.evaluate(function() {
                 document.querySelector('._lp3').style.cssText = "display:none";
             })
             setTimeout(function(){
-            
-                page.render("parte5.jpg");
                 if(other){
                     var test2 = page.evaluate(function(){
                         return document.querySelector("form[action='/search/top/']")
@@ -86,8 +79,6 @@ page.open(url, function(status) {
         }
 
     }
+  
 
 })
-
-
-

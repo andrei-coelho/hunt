@@ -1,4 +1,11 @@
 "use strict";
+var args = require('system').args;
+console.log(args);
+
+phantom.exit();
+
+/*
+
 var webPage = require('webpage');
 var page = webPage.create();
 var fs = require('fs');
@@ -77,3 +84,4 @@ page.open("https://www.facebook.com/marciane.silva.7543/friends", function(statu
 
    }
 });
+*/
