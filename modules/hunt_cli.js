@@ -55,8 +55,11 @@ module.exports = function(cookie, agent, lang){
             });
         },
 
-        friends : () => {
-            //
+        friends : (link, callback) => {
+            let urlFinal = "\""+url_fb+link+"/friends_all\"";
+            call_file("friends.js", urlFinal, (error, data, stderr) => {
+                callback(error, data, stderr);
+            });
         }
 
     }
