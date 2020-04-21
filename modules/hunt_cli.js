@@ -30,7 +30,6 @@ module.exports = function(cookie, agent, lang){
             cbk(error, data, stderr)
         });
        
-       
     }
 
     return {
@@ -60,6 +59,13 @@ module.exports = function(cookie, agent, lang){
             call_file("friends.js", urlFinal, (error, data, stderr) => {
                 callback(error, data, stderr);
             });
+        },
+
+        messenger : (link, mensagem, callback) => {
+            let urlFinal = "\""+url_fb+link+"\"";
+            call_file("messenger.js", urlFinal, (error, data, stderr) => {
+                callback(error, data, stderr);
+            },[mensagem]);
         }
 
     }

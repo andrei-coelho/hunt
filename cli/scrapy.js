@@ -17,7 +17,7 @@ page.onResourceReceived = function(response) {
     pageResponses[response.url] = response.status;
     fs.write(CookieJar, JSON.stringify(phantom.cookies), "w");
 };
- Array.prototype.forEach.call(JSON.parse(fs.read(CookieJar)), function(x){
+Array.prototype.forEach.call(JSON.parse(fs.read(CookieJar)), function(x){
     phantom.addCookie(x);
 });
 
@@ -27,8 +27,6 @@ page.open(url, function(status) {
 
         page.viewportSize = { width: 1920, height: 1080 };
         
-        console.log("entrou");
-
         var top = 0;
         var sBase = 0;
 

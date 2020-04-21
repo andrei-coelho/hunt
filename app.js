@@ -61,8 +61,7 @@ fs.readFile("./json/conf.json", (e, data) => {
             cli("cookiejar", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36")
            
             /*
-            
-            
+        
             .scrapy("maria.perroni.9", (error, data, stderr) => {
                 if(error) throw error;
                 console.log(data);
@@ -73,20 +72,23 @@ fs.readFile("./json/conf.json", (e, data) => {
                 console.log(data);
             });
 
-            .login("andreifcoelho@gmail.com", "mushmush741", (error, data, stderr) => {
+            .login("andreifcoelho@gmail.com", "mushmush172039", (error, data, stderr) => {
                 if(error) throw error;
                 console.log(data);
             });
 
-            
-             
-            */
-
-           
             .friends("maria.perroni.9", (error, data, stderr) => {
                 if(error) throw error;
                 console.log(data);
             });
+             
+            */
+           .messenger("ayoubmanda", "mensagem teste", (error, data, stderr) => {
+                if(error) throw error;
+                console.log(data);
+            });
+           
+            
             
             
         break;
