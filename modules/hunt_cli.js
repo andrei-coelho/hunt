@@ -13,7 +13,8 @@ module.exports = function(cookie, agent, lang){
     var url_fb = "https://www.facebook.com/",
         cookie = "\""+appRoot+"\\json\\cookies\\"+cookie+"\"",
         agent  = "\""+agent+"\"",
-        lang   = "\""+lang+"\"";
+        lang   = "\""+lang+"\"",
+        regex  = new RegExp("^[^a-z\.]+$","gi");
         //ip     = ip,
         //port   = port;
 
@@ -24,8 +25,7 @@ module.exports = function(cookie, agent, lang){
         args.forEach(arg => strArgs += " \""+arg+"\"");
 
         var cl = 'phantomjs '+arquivo+strArgs;
-        //console.log(cl);
-        
+
         cmd.get(cl, (error, data, stderr) => {
             cbk(error, data, stderr)
         });
@@ -48,17 +48,24 @@ module.exports = function(cookie, agent, lang){
         },
 
         scrapy : (link, callback) => {
-            let urlFinal = "\""+url_fb+link+"\"";
+            let urlFinal = 
+                regex.test(link) ? 
+                "\""+url_fb+"profile.php?id="+link+"\"" :
+                "\""+url_fb+link+"\"";
             call_file("scrapy.js", urlFinal, (error, data, stderr) => {
                 callback(error, data, stderr);
             });
         },
 
         friends : (link, callback) => {
-            let urlFinal = "\""+url_fb+link+"/friends_all\"";
+            let urlFinal = 
+                regex.test(link) ? 
+                "\""+url_fb+"profile.php?id="+link+"&sk=friends_all\"" :
+                "\""+url_fb+link+"/friends_all\"";
             call_file("friends.js", urlFinal, (error, data, stderr) => {
                 callback(error, data, stderr);
             });
+
         },
 
         messenger : (link, mensagem, callback) => {

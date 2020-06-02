@@ -7,7 +7,7 @@ var CookieJar = args[1]+".json";
 var pageResponses = {};
 var url = args[2];
 
-page.settings.userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36';
+page.settings.userAgent = args[3];
 page.settings.javascriptEnabled = true;
 page.settings.loadImages = true;
 phantom.cookiesEnabled = true;
@@ -17,11 +17,11 @@ page.onResourceReceived = function(response) {
     pageResponses[response.url] = response.status;
     fs.write(CookieJar, JSON.stringify(phantom.cookies), "w");
 };
- Array.prototype.forEach.call(JSON.parse(fs.read(CookieJar)), function(x){
+Array.prototype.forEach.call(JSON.parse(fs.read(CookieJar)), function(x){
     phantom.addCookie(x);
 });
 
-page.open("https://www.facebook.com/marciane.silva.7543/friends", function(status) {
+page.open(url, function(status) {
 
     if ( status === "success" ) {
 
