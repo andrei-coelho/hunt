@@ -59,7 +59,9 @@ page.open(url, function(status) {
 
                 }, regex);
 
-                console.log(lista.length);
+                //console.log("#status:true#");
+                console.log('#object:{"total":"'+lista.length+'"}#');
+                
                 clearInterval(interval);
                 phantom.exit();
 

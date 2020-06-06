@@ -1,4 +1,5 @@
 {
-    "machine": "ilskjhkjahsjka",
-    "API_URL": "http://192.168.0.19/api_hunt/"
+    "machine": "$2y$10$cxaqVKbhUpLDioU5iLmtYOQBpUkkC",
+    "slug"   : "Maquina 1",
+    "API_URL": "http://192.168.0.19/laravel-projects/hunt_admin/public/"
 }

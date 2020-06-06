@@ -36,19 +36,19 @@
 *                                                                               *
 *********************************************************************************/
 
-var fs   = require('fs'),
-    path = require('path'),
-    bot  = require('./modules/bot_control');
+var app  = require('./modules/app');
+app(); // tudo começa aqui
 
-var cli  = require('./modules/hunt_cli');
-
-global.appRoot = path.resolve(__dirname);
-
+/*
 fs.readFile("./json/conf.json", (e, data) => {
 
     if (e) throw e;
 
+    process.argv[2];
+
+
     switch (process.argv[2]) {
+        
         case "start":
             let conf = JSON.parse(data);
             bot.start(conf);
@@ -57,14 +57,15 @@ fs.readFile("./json/conf.json", (e, data) => {
         default:
 
             // para testes de modulos etc..
-            
+      
             cli("cookiejar", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36")
-            .friends("marciane.silva.7543", (error, data, stderr) => {
+            .friends("marciane.silva.7543", (error, response, stderr) => {
                 if(error) throw error;
-                console.log(data);
+                console.log(response);
             });
-
+            
             /*
+            
            .scrapy("maria.perroni.9", (error, data, stderr) => {
                 if(error) throw error;
                 console.log(data);
@@ -86,15 +87,13 @@ fs.readFile("./json/conf.json", (e, data) => {
                 if(error) throw error;
                 console.log(data);
             });
-
-            
-
-            */     
-            
             
         break;
     }
+      
 });
+
+*/ 
 
 // phantomjs search.js "C:\node-projects\hunt\json\cookies\cookiejar" "https://www.facebook.com/search/people/?q=ana&epa=SERP_TAB" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36" "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"
 

@@ -1,0 +1,33 @@
+{
+    "client":{
+        "slug": "valor",
+        "nome":"valor",
+        "cookie":"email_do_cookie",
+        "filtro_locatidade":"valor"
+    },
+    "perfis":[
+        {
+            "id": 0,
+            "id_fb":"valor",
+            "nome":"valor",
+            "senha":"valor",
+            "scrapy":false,
+            "friends":false,
+            "analise":false
+        }
+    ],
+    "tags_client":[
+        {
+            "slug":"valor1",
+            "regex":"/regex1/"
+        }
+    ],
+    "intents":[
+        {
+            "intent": "",
+            "regex": "/regex1/",
+            "message": "valor"
+        }
+    ]
+}
+

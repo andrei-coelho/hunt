@@ -5,7 +5,6 @@ var request  = require('request');
 var log      = require('../helpers/log');
 var datetime = require('../helpers/datetime');
 
-
 module.exports.start = conf => {
 
     log.out("Conectando com o servidor da API...", "info", false);
@@ -24,6 +23,26 @@ module.exports.start = conf => {
         open_server();
     });
 
+}
+
+module.exports.search = client => {
+    console.log("fazendo busca de usuarios"); 
+}
+
+module.exports.friends = client => {
+    console.log("pegando amigos dos usuarios"); 
+}
+
+module.exports.scrapy = client => {
+    console.log("fazendo scrapy dos usuarios"); 
+}
+
+module.exports.analise = client => {
+    console.log("fazendo analise dos usuarios"); 
+}
+
+module.exports.login = client => {
+    console.log("fazendo login do cliente"); 
 }
 
 var recover_data_on_API = (url, callback, t = 2) => {
@@ -46,10 +65,9 @@ var recover_data_on_API = (url, callback, t = 2) => {
 var open_server = () => {
 
     var server = http.createServer(),
-        inicio = datetime.full(),
         bot_image = 
     `
-    *                   Robô Iniciado na data ${inicio}                  *
+    *                   Robô Iniciado na data ${datetime.full()}                  *
     *                                                                               *
     *                      _______________________________________                  *
     *                    /_________                                \\                *

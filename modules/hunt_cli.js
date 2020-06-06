@@ -5,7 +5,8 @@
 
 */
 
-var cmd = require('node-cmd');
+var cmd = require('node-cmd'),
+    response = require('./response');
 
 module.exports = function(cookie, agent, lang){
 //function(cookie, agent, lang, ip, port){
@@ -37,13 +38,13 @@ module.exports = function(cookie, agent, lang){
         search : (q, callback) => {
             let urlFinal = "\""+url_fb+"search/people/?q="+q+"&epa=SERP_TAB\"";
            call_file("search.js", urlFinal, (error, data, stderr) => {
-               callback(error, data, stderr)
+               callback(error, response(data), stderr)
            });
         },
 
         login : (email, pass, callback) => {
             call_file("login.js", "\""+url_fb+"\"", (error, data, stderr) => {
-               callback(error, data, stderr)
+               callback(error, response(data), stderr)
             }, [email, pass]);
         },
 
@@ -53,7 +54,7 @@ module.exports = function(cookie, agent, lang){
                 "\""+url_fb+"profile.php?id="+link+"\"" :
                 "\""+url_fb+link+"\"";
             call_file("scrapy.js", urlFinal, (error, data, stderr) => {
-                callback(error, data, stderr);
+                callback(error, response(data), stderr);
             });
         },
 
@@ -63,7 +64,7 @@ module.exports = function(cookie, agent, lang){
                 "\""+url_fb+"profile.php?id="+link+"&sk=friends_all\"" :
                 "\""+url_fb+link+"/friends_all\"";
             call_file("friends.js", urlFinal, (error, data, stderr) => {
-                callback(error, data, stderr);
+                callback(error, response(data), stderr);
             });
 
         },
