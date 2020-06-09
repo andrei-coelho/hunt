@@ -36,8 +36,11 @@
 *                                                                               *
 *********************************************************************************/
 
-var app  = require('./modules/app');
-app(); // tudo começa aqui
+
+var app  = require('./modules/app'),
+    path = require('path');
+    global.appRoot = path.resolve(__dirname);
+    app(); // tudo começa aqui
 
 /*
 fs.readFile("./json/conf.json", (e, data) => {

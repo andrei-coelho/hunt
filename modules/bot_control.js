@@ -1,40 +1,57 @@
 "use strict";
 
-var http     = require('http');
-var request  = require('request');
-var log      = require('../helpers/log');
-var datetime = require('../helpers/datetime');
+var fs       = require('fs'),
+    api      = null,
+    cli      = require('../modules/hunt_cli'),
+    log      = require('../helpers/log'),
+    datetime = require('../helpers/datetime'),
+    header   = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36";
 
-module.exports.start = conf => {
+module.exports.conf = conf => {
+    api      = (require('../modules/api'))(conf);
+}
 
-    log.out("Conectando com o servidor da API...", "info", false);
-    
-    recover_data_on_API(conf.API_URL+"/"+conf.machine+"/client/get", (res, info)=> {    
-        
-        log.out("Recuperando informações dos clientes...", "info", false);
-        var dados = JSON.parse(info);
-        
-        console.log(dados);
+module.exports.start = client => {
 
-        if(dados.error){
-            log.out("Erro interno. A requisição está retornando erro: "+dados.error, "danger", false);
+}
+
+module.exports.search = (client, open = true) => {
+
+    fs.readFile('./json/names.json', (e, data) => {
+        let nomes = JSON.parse(data);
+        open_server("Search", client.nome, open, "Buscado perfís para o cliente...");
+       busca(client, nomes.shift(), nomes, []);
+    })
+}
+
+// função auxiliar do search ^^
+const busca = (client, nome, nomes) => {
+    cli(client.email, header)
+    .search(nome, client.filtro_localidade, client.id, (error, response, stderr) => {
+        salvar_perfis(response.obj); 
+        if(nomes.length == 0){
+            log.save("Serviço: Search | Cliente: " + client.nome + " - Finalizado ");
             return;
-        }        
-        open_server();
+        } 
+        busca(client, nomes.shift(), nomes);
     });
-
 }
 
-module.exports.search = client => {
-    console.log("fazendo busca de usuarios"); 
+const salvar_perfis = objetos => {
+    api.post('client/save', objetos, (res, status) =>{
+       return; // silence is gold
+    });
 }
 
-module.exports.friends = client => {
+
+module.exports.scrapy = (client, open = true ) => {
+    open_server("Scrapy", client.nome, open, "Realizando trabalho de scrapy...");
+}
+
+
+module.exports.friends = (client, open = true) => {
+    open_server("Search", client.nome, open);
     console.log("pegando amigos dos usuarios"); 
-}
-
-module.exports.scrapy = client => {
-    console.log("fazendo scrapy dos usuarios"); 
 }
 
 module.exports.analise = client => {
@@ -45,27 +62,10 @@ module.exports.login = client => {
     console.log("fazendo login do cliente"); 
 }
 
-var recover_data_on_API = (url, callback, t = 2) => {
-    
-    request(url, (e, res, info) => {
-        
-        if(e || res.statusCode === 404){
-            t++;
-            log.out("Erro de Conexão com a API:\nA URL configurada está errada ou o servidor está fora do ar...\nTentativa de nº "+t+" ...", "warning", false, true);
-            setTimeout(() => {
-                recover_data_on_API(url,callback,t);
-            }, 2500);
-            return;
-        }
-        callback(res, info);
 
-    })
-}
+var open_server = (serviceName, cliente, open, mensagem) => {
 
-var open_server = () => {
-
-    var server = http.createServer(),
-        bot_image = 
+    var bot_image = 
     `
     *                   Robô Iniciado na data ${datetime.full()}                  *
     *                                                                               *
@@ -94,9 +94,8 @@ var open_server = () => {
     *   |____/   |____/   |______________/   |____/    |____/      |____/           *
     *                                                                               *
     *                                                                               *\n`;
-    server.listen(3000, '127.0.0.1', () => {
-        log.out(bot_image, "info", false);
-        log.save("Robô iniciado!", 'info', true, false);
-    });
-
+    
+    if(open) log.out(bot_image, "info", false);
+    log.save("Serviço: "+ serviceName + " | Cliente: " + cliente + " - Iniciado ");
+    log.out(mensagem, "info", false);
 }

@@ -17,7 +17,7 @@ module.exports.out = (message, type = "info", time = true) => {
 module.exports.save = (message, type = "info", time = true, show = true) => {
 
     var file = appRoot+"/logs/"+datetime.date_underscore()+".txt";
-    var mess = "\r"+datetime.time() + " > " + type + ": " + message;
+    var mess = "\r"+datetime.time() + " > " + type + " = " + message;
     
     fs.open(file, 'r', err => {
         if(err){

@@ -1,80 +1,89 @@
 "use strict";
 
     // modulos
-var fs   = require('fs'),
-    path = require('path'),
+var api  = require('../modules/api'),
+    fs   = require('fs'),
     bot  = require('./bot_control'),
     log  = require('../helpers/log'),
+    conn = null,
 
     // atributos
     count_args     = process.argv.length,
     args           = process.argv,
     modules        = ['search', 'friends', 'scrapy', 'analise', 'login'];
-    global.appRoot = path.resolve(__dirname);
 
 module.exports = function() {
     
-    if(count_args < 3) error();
-    let command = args[2];
+    fs.readFile("./json/conf.json", (e, data) => {
 
-    switch (command) {
-        case "-help": help(); break;
-        case "-start": start(); break;
-        case "-merge": merge(); break;
-        case "-commit": commit(); break;
-        case "-test": 
-            if(count_args < 4) error();
-            test(); 
-        break;
-        default:
-            if(count_args < 4) error();
-            execute_module();
+        var conf = JSON.parse(data);
+        bot.conf(conf);
+        conn = api(conf);
+
+        if(count_args < 3) error();
+        let command = args[2];
+
+        switch (command) {
+            case "-help": help(); break;
+            case "-start": start(conf); break;
+            case "-merge": merge(conf); break;
+            case "-commit": commit(conf); break;
+            case "-test": 
+                if(count_args < 4) error();
+                test(conf); 
             break;
-    }
+            default:
+                if(count_args < 4) error();
+                execute_module(conf);
+                break;
+        }
+
+    })
     
 }
 
-const start = () => {
+const start = conf => {
     // em construção
     under_construction();
 }
 
-const merge = () => {
+const merge = conf => {
     // em construção
     under_construction();
 }
 
-const commit = () => {
+const commit = conf => {
     // em construção
     under_construction();
 }
 
-const test = () => {
+const test = conf => {
     var file = args[3];
     if(count_args == 5){
         getClientExecute(args[4], (e, client) => {
             if (e) throw e;
-            (require('../test/'+file))(client);
+            (require('../test/'+file))(conf, client);
         });
         return;
     }
-    (require('../test/'+file))();
+    (require('../test/'+file))(conf);
 }
 
 const getClientExecute = (file_client, callback) => {
-    fs.readFile("./json/client/"+file_client+".json", (e, client) => callback(e, JSON.parse(client)))
+    fs.readFile("./json/client/"+file_client+"/"+file_client+".json", (e, client) => callback(e, JSON.parse(client)))
 }
 
-const execute_module = () => {
+const execute_module = conf => {
 
     let msplit = args[3].split(":");
     if(msplit.length != 2 || msplit[0] != "module") error(2)
     if(!modules.includes(msplit[1])) error(3);
-
-    getClientExecute(args[4], (e, client) => {
+    
+    getClientExecute(args[2], (e, client) => {
         if (e) throw e;
-        
+        bot[msplit[1]](client);
     });
+
 }
 
 const error = (type = 1) => {
@@ -116,7 +125,7 @@ const help = ()=> {
     log.out(`
     -help                 - "mostra as opções de comando"
     -start                - "executa todos os clientes seguindo as configurações de cada um"
-    -merge                - "altera, deleta ou cria novos clientes usando a API na nuvem"
+    -merge [?client]      - "altera, deleta ou cria novos clientes usando a API na nuvem"
     -commit               - "salva todas as alterações de todos os clientes na nuvem"
     -commit [client]      - "salva todas as alterações de um cliente específico"
     -test [file]          - "executa um arquivo de teste em ./test/"

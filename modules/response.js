@@ -10,13 +10,13 @@ const generate = stringMsg => {
 
     let values = stringMsg.match(resp);
     let arrval = [];
-
+    
     values.forEach(element => {
         let val = cleanResult(element);
         arrval.push(val);
     });
-    
-    return newObject(arrval);
+
+    return createObject(arrval);
     
 }
 
@@ -28,7 +28,7 @@ const cleanResult = str => {
 
 }
 
-const newObject = arr => {
+const createObject = arr => {
     let obj = respObj();
     arr.forEach(el => {
         let vals = el.split(/:(.+)/);

@@ -11,9 +11,9 @@
   "dependencies": {
     "fs": "0.0.1-security",
     "jimp": "^0.9.3",
+    "minimist": ">=0.2.1",
     "node-cmd": "^3.0.0",
     "node-tesseract-ocr": "^1.0.0",
-    "request": "^2.88.0",
-    "minimist": ">=0.2.1"
+    "request": "^2.88.0"
   }
 }

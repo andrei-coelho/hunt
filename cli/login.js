@@ -8,8 +8,8 @@ var fs = require('fs');
 var CookieJar = args[1]+".json";
 var pageResponses = {};
 var url = args[2];
-var email = args[5];
-var pass = args[6];
+var email = args[4];
+var pass = args[5];
 
 phantom.cookiesEnabled = true;
 phantom.javascriptEnabled = true;

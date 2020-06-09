@@ -6,6 +6,7 @@ var fs = require('fs');
 var CookieJar = args[1]+".json";
 var pageResponses = {};
 var url = args[2];
+var id_client = args[4];
 
 phantom.cookiesEnabled = true;
 phantom.javascriptEnabled = true;
@@ -21,15 +22,14 @@ Array.prototype.forEach.call(JSON.parse(fs.read(CookieJar)), function(x){
     phantom.addCookie(x);
 })
 
-// phantomjs C:\node-projects\hunt\cli\search.js "C:\node-projects\hunt\json\cookies\cookiejar" "https://www.facebook.com/search/people/?q=ana&epa=SERP_TAB" "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0" "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"
-
-page.open("https://www.facebook.com/search/people/?q=ana&epa=FILTERS&filters=eyJjaXR5Ijoie1wibmFtZVwiOlwidXNlcnNfbG9jYXRpb25cIixcImFyZ3NcIjpcIjExMjA0NzM5ODgxNDY5N1wifSJ9", function(status) {
+page.open(url, function(status) {
 
     if ( status === "success" ) {
+        
         console.log("entrou");
         
         page.viewportSize = { width: 1920, height: 1080 };
-        page.render("test.png");
+        
         var index = 3000;
         
         var interval = setInterval(function () {
@@ -38,7 +38,7 @@ page.open("https://www.facebook.com/search/people/?q=ana&epa=FILTERS&filters=eyJ
 
                 var regex = /(https?:\/\/www\.facebook\.com\/profile\.php\?id=([\d]+)|https?:\/\/www\.facebook\.com\/([^\?]+))/g;
 
-                var lista = page.evaluate( function(regex) {
+                var lista = page.evaluate( function(regex, id_client) {
 
                     var listFinal  = Array();
                     var arrSerach  = document.getElementsByClassName('_32mo');
@@ -48,21 +48,22 @@ page.open("https://www.facebook.com/search/people/?q=ana&epa=FILTERS&filters=eyJ
                         while (matches = regex.exec(el.href)) {
                             urlUser =  matches[2] ? matches[2] : matches[3];
                         }
-                        listFinal.push({url:urlUser, nome:el.innerText});
+                        listFinal.push({id_client:id_client, id_fb:urlUser, nome:el.innerText});
                     })
                     
                     return listFinal;
 
-                }, regex);
+                }, regex, id_client);
 
                 if(lista.length === 0){
                     // o login caiu
-                    console.log("false");
+                    console.log("#status:false#");
                 } else {
-                    console.log(JSON.stringify(lista));
+                    console.log("#status:true#");
                 }
-
+                console.log("#object:"+JSON.stringify(lista)+"#");
                 clearInterval(interval);
+                page.render("last_print-"+id_client+".png");
                 phantom.exit();
 
             } else {
