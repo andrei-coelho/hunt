@@ -6,6 +6,7 @@ var fs = require('fs');
 var CookieJar = args[1]+".json";
 var pageResponses = {};
 var url = args[2];
+var path = args[4]; // local em que será salvo as imagens
 
 phantom.cookiesEnabled = true;
 phantom.javascriptEnabled = true;
@@ -56,28 +57,43 @@ page.open(url, function(status) {
 
         })
 
+        var next = false;
+
         var interval = window.setInterval(function () {
             
             if(top > 15){
 
+                console.log("#status:true#");
                 window.clearInterval(interval);
                 phantom.exit();
 
             } else {
             
-                page.render('facebook_page_'+top+'.png');
+                page.render(path + '\\facebook_page_'+top+'.png');
                 top++;
                 sBase = page.evaluate(function () { return document.body.scrollHeight; });
+
+                if(next){
+                    console.log("#status:true#");
+                    window.clearInterval(interval);
+                    phantom.exit();
+                }
 
                 page.scrollPosition = {
                     top: sBase,
                     left: 0
                 };
+
+                isFinish = page.evaluate(function() { return document.getElementsByClassName('sp_dPnsHOPzupp').length; })
+                if(isFinish == 1) next = true;
             }
 
         }, 5000);
 
    } else {
+
+       console.log("#status:false#");
        phantom.exit();
+       
    }
 });

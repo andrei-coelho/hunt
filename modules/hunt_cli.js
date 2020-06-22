@@ -8,13 +8,13 @@
 var cmd = require('node-cmd'),
     response = require('./response');
 
-module.exports = function(cookie, agent){
+module.exports = function(cookie){
 
     var url_fb = "https://www.facebook.com/",
         cookie = "\""+appRoot+"\\json\\cookies\\"+cookie+"\"",
-        agent  = "\""+agent+"\"",
+        agent  = "\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36\"", 
         regex  = new RegExp("^[^a-z\.]+$","gi");
-        
+
     var call_file = (file, url, cbk, args = []) => {
 
         var arquivo = appRoot+"\\cli\\"+file;
@@ -57,11 +57,14 @@ module.exports = function(cookie, agent){
                 regex.test(link) 
                 ? "\""+url_fb+"profile.php?id="+link+"\"" 
                 : "\""+url_fb+link+"\"";
-
+            let path = "\""+appRoot+"\\images\\" + link + "\"";
+                        
+   
             call_file("scrapy.js", urlFinal, (error, data, stderr) => {
                 callback(error, response(data), stderr);
-            });
-
+            }, [path]);
+         
+   
         },
 
         friends : (link, callback) => {

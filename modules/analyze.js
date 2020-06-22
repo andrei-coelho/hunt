@@ -1,84 +1,109 @@
 var fs   = require('fs');
 const tesseract = require("node-tesseract-ocr");
 const Jimp = require("jimp");
+var intents_module = [];
 
-// isso aqui é recuperado no objeto global
-const intents = [
-    {
-        "intent":"educacao",
-        "regex":
-            "((contigenciamento.+)?educacao((do)?\s?brasil|brasileira|mundial|(do)?\s?mundo)?|(contigenciamento.+)?[^\w]mec[^\w]|ministerio da educacao|ministro da educacao|ministro da deseducacao|educacao publica|universidades?|universidades? publicas?|professor(e|a)?s?)",
-        "message":"valor"
-    },
-    {
-        "intent":"saude",
-        "regex":
-            "medicos?($|\s)(estrangeiros?|cubanos?|brasileiros?)?|((sistema|plano)\s?(de\s?)?)?saude(\spublica)?|saneamento(basico)?|[^\w]sus[^\w]|[^\w]upa[^\w]",
-        "message":"valor"
+module.exports = intents_list => {
+
+    // os ids do FB para recuperar as imagens nos diretorios
+    intents_module  = // intents_list; // será este
+    // isso aqui é recuperado no objeto global intents
+    [
+        {
+            "slug":"educacao",
+            "regex":
+                "(contigenciamento.+)?educa(c|ç)(ã|a)o((do)?\s?brasil|brasileira|mundial|(do)?\s?mundo)?|contigenciamento(\sda|\sna)?\seduca(c|ç)(ã|a)o?|(^|[^\w])mec($|[^\w])|(^|[^\w])eja($|[^\w])|(^|[^\w])fundeb($|[^\w])|(^|[^\w])ead($|[^\w])|ministerio\sda\seduca(c|ç)(ã|a)o|ministro\sda\seduca(c|ç)(ã|a)o|ministro\sda\sdeseduca(c|ç)(ã|a)o|educa(c|ç)(ã|a)o\spublica|universidades?\s?(publicas?)?|professor(e|a)?s?|creches?|escolas?|pedago(g(o|a)|gia)"
+        },
+        {
+            "slug":"saude",
+            "regex":
+                "medicina|m(é|e)dicos?($|\s)(estrangeiros?|cubanos?|brasileiros?)?|((sistemas?|planos?|postos?)\s?(de?\s?)?)?sa(ú|u)des?(\sp(ú|u)blic(o|a)s?)?|saneamento(b(á|a)sico)?|(^|[^\w])sus($|[^\w])|(^|[^\w])upa($|[^\w])|(corona\s?)?v(í|i)rus|(^|[^\w])covid(-?19)?($|[^\w])|vacina(ç|c)(ã|a)o|prevenção|(^|[^\w])AIDS($|[^\w])|(^|[^\w])DST($|[^\w])|(^|[^\w])SESA($|[^\w])|a(ç|c)(õ|o)es?\ssanit(a|á)rias?|secretaria\smunicipal(\sd(a|e))?\ssa(u|ú)de|leitos?(\sde)\sUTI($|[^\w])|enfermeir(a|o)s?|enfermagem|fiquem?(\s)?em(\s)?casa"
+        }
+    ];
+
+    return {
+
+        get_intents: (id_fb, callback) => {
+            // recupera todas as imagens do perfil
+            generate_images_pb(id_fb, images => {
+                // lê as imagens em preto e branco
+                read_images(id_fb, images, intents => {
+                    // retorna as intenções do perfil
+                    callback(intents)
+                })
+            })
+        }
+
     }
-];
 
-let get_intent = (text, callback) => {
-    var avaliado = false;
-    intents.forEach(item => {
+}
+
+const read_images = (id_fb, images, callback, intents = []) => {
+    let img = images.shift();
+    recognize_intent(id_fb, img, intent => {
+        if(intent) intents.push(intent);
+        images.length === 0 ?
+        callback(intents) :
+        read_images(id_fb, images, callback, intents)
+    })
+    
+}
+
+
+const get = (text, callback, avaliado = false) => {
+    console.log(text);
+    
+    intents_module.forEach(item => {
         var reg = RegExp(item.regex,'ig');
         if(reg.test(text)) {
             avaliado = true;
-            callback(item.intent);
+            callback(item.slug);
         }
     });
     if(!avaliado)
     callback(false);
 };
 
-var save_intent = img => {
-    tesseract.recognize(__dirname + img, options)
-      .then(text => {
-          get_intent(text, intent => {
-             !intent ? console.log(img+" > ", "indefinido") :
-             console.log(img+" > ", intent);
-          });
-      })
-      .catch(error => {
-        console.log(error.message)
-      })
+const recognize_intent = (id_fb, img, callback) => {
+    var image = appRoot + "\\images\\"+id_fb+"\\pb\\" + img;
+    tesseract.recognize(image, options)
+    .then(text => {
+        get(text, intent => {
+            let msg = !intent ? "Não conseguiu identificar uma intenção" : "";
+            callback(intent, msg)
+        });
+    })
+    .catch(error => {
+        callback(false, "ocorreu um erro ao tentar identificar");
+    })
 }
 
 
-var objFinal = {};
+const generate_images_pb = (id_fb, callback) => {
+    var dir = appRoot + "\\images\\"+id_fb+"\\";
+    fs.readdir(dir, (err, list) => {
+        
+        var imgs = [];
+        list.forEach(el => {
+            if(/(\.jpg|\.png|\.jpeg)/.test(el)) imgs.push(el)
+        })
 
-var get_images = callback => {
-    fs.readdir("imagens/color/", async (err, imgs) => {
         let totalImgs = imgs.length;
-        let arrCount  = [];
-        /*
-        // descomentar esse bloco em produção
+        
         imgs.forEach((item, i) => {
-            Jimp.read("imagens/color/"+item, (err, image) => {
-                if (err) arrCount.push(false);
-                image.greyscale().write("imagens/pb/"+item);
-                arrCount.push(true);
+            Jimp.read(dir+item, (err, image) => {
+                image.greyscale().write(dir+"/pb/"+item);
+                if((i + 1) === totalImgs){
+                    callback(imgs);
+                }
             });
         });
-        let interval = setInterval(() => {
-            if(arrCount.length === totalImgs){
-                callback(imgs);
-                clearInterval(interval);
-            }
-        }, 500);
-        */
-        callback(imgs); // apagar em produção
+      
     });
 }
 
-var options = {
+const options = {
 	l: 'por',
 	psm: 1
 };
 
-get_images(imgs => {
-    imgs.forEach(item => {
-        save_intent('\\imagens\\pb\\'+item);
-        save_intent('\\imagens\\color\\'+item);
-    });
-});

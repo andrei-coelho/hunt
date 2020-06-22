@@ -14,6 +14,15 @@ module.exports = conf => {
         return url;
     }
 
+    const clean_json = json_text => {
+
+        if(json_text[0] != "{" || json_text[0] != "["){
+            json_text = json_text.substr(1, json_text.length);
+        }
+        return json_text;
+        
+    }
+
     return {
 
         get: (route, callback, client = "") => {
@@ -23,18 +32,18 @@ module.exports = conf => {
             request(url, (e, res) => {
                 
                 if(e){
-                    callback('{"error":"500"}', 500 );
+                    callback(JSON.parse(clean_json('{"error":"500"}')), 500 );
                     return;
                 }
 
                 if(res){
                     let resp = res.toJSON();
-                    callback(resp.body, resp.statusCode);
+                    callback(JSON.parse(clean_json(resp.body)), resp.statusCode);
                     return;
                 } 
 
                 // erro no servidor
-                callback('{"error":"500"}', 500 );
+                callback(JSON.parse(clean_json('{"error":"500"}')), 500 );
                 
             })
 
@@ -51,17 +60,16 @@ module.exports = conf => {
                 },
                 (e, res) => {
                    if(e){
-                        callback('{"error":"500"}', 500 );
+                        callback(JSON.parse(clean_json('{"error":"500"}')), 500 );
                         return;
                     }
-
                     if(res){
                         let resp = res.toJSON();
-                        callback(resp.body, resp.statusCode);
+                        callback(JSON.parse(clean_json(resp.body)), resp.statusCode);
                         return;
                     } 
                     // erro no servidor
-                    callback('{"error":"500"}', 500 );
+                    callback(JSON.parse(clean_json('{"error":"500"}')), 500 );
                 }
             )
 
