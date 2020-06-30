@@ -19,6 +19,8 @@ module.exports = conf => {
         if(json_text[0] != "{" || json_text[0] != "["){
             json_text = json_text.substr(1, json_text.length);
         }
+        json_text = json_text.replace("<br />", "");
+        json_text = json_text.replace("<br>", "")
         return json_text;
         
     }

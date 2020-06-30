@@ -28,6 +28,7 @@ module.exports = function() {
             case "-start": start(conf); break;
             case "-merge": merge(conf); break;
             case "-commit": commit(conf); break;
+            case "-restore": restore(conf); break;
             case "-test": 
                 if(count_args < 4) error();
                 test(conf); 
@@ -128,6 +129,7 @@ const help = ()=> {
     -merge [?client]      - "altera, deleta ou cria novos clientes usando a API na nuvem"
     -commit               - "salva todas as alterações de todos os clientes na nuvem"
     -commit [client]      - "salva todas as alterações de um cliente específico"
+    -restore [?client]    - "corrige todas as falhas que ocorreram sem alterar o último estado na núvem"
     -test [file]          - "executa um arquivo de teste em ./test/"
     -test [file] [client] - "executa um arquivo de teste em ./test/ e pega os dados do cliente"
     `, "info", false)
