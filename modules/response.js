@@ -1,4 +1,12 @@
 "use strict";
+/**
+ * 
+ * RESPONSE MODULE
+ * Faz a leitura da resposta vinda de qualquer script 
+ * do CLI e cria o Objeto de resposta padrão para
+ * a manipulação
+ *  
+ */
 
 const resp  = /(#(status|object):([^#]+)#)/ig;
 

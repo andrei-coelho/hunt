@@ -70,9 +70,9 @@ const busca = (client, nome, nomes) => {
         salvar_perfis(client.slug, response.obj); 
         if(nomes.length == 0){
             log.save("Serviço: Search | Cliente: " + client.nome + " - Finalizado ");
-            return;
-        } 
-        busca(client, nomes.shift(), nomes);
+        } else {
+            busca(client, nomes.shift(), nomes);
+        }
     });
 }
 
@@ -146,14 +146,14 @@ module.exports.analise = (client, open = true) => {
     open_server("Analise", client.nome, open, "Fazendo análise das imagens dos perfís...");
     var analise = analyze(client.intents);
    
-    api.get("perfis/get_analise/"+client.slug+"/100", perfis => {
+    api.get("perfis/get_analise/"+client.slug+"/1000", perfis => {
         
         let total = perfis.length;
         if(total === 0) {
             log.out("Não há perfis a serem analisados");
             return;
         }
-        log.out("Fazendo análise de " +  + " perfis...");
+        log.out("Fazendo análise de " + total + " perfis...");
         
         var directors = [];
         
@@ -161,7 +161,8 @@ module.exports.analise = (client, open = true) => {
         analise_perfis(analise, client.slug, perfis, status => {
             if(status){
                 // se ocorreu tudo bem, deleta a pasta e os arquivos
-                directors.forEach(d => delete_dir(appRoot + "\\images\\"+d));
+                //delete_dir(directors);
+                
             }
             log.save("Serviço: Analise | Cliente: " + client.nome + " - Finalizado com " + (status ? "sucesso" : "problemas"));   
         })
@@ -180,16 +181,16 @@ const analise_perfis = (analise, client_slug, perfis, callback, status = true) =
         perfil.analise = 1;
 
         api.post("perfis/save_intents/"+client_slug, perfil, response => {
-            
+
             // se der QUALQUER problema ao tentar salvar algum registro...
             // o status torna-se false
             if(response.status != "ok") status = false;
-            if(perfis.length === 0){
+            if(perfis.length == 0){
                 callback(status);
-                return;
+            } else {
+                analise_perfis(analise, client_slug, perfis, callback, status);
             }
-            analise_perfis(analise, client_slug, perfis, callback, status);
-
+            
         })
 
     });
@@ -209,7 +210,7 @@ module.exports.restore = (client, open = true) => {
 }
 
 // um helper do scrapy para deletar diretorios
-const delete_dir = function(dir) {
+const delete_dir = dir => {
     
     if (!fs.existsSync(dir)) return;
 
