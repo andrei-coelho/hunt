@@ -88,7 +88,7 @@ page.open(url, function(status) {
                 if(isFinish == 1) next = true;
             }
 
-        }, 2500);
+        }, 3000);
 
    } else {
 

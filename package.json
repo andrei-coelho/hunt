@@ -9,6 +9,7 @@
   "author": "Andrei Coelho",
   "license": "MIT",
   "dependencies": {
+    "jpeg-js": ">=0.4.0",
     "fs": "0.0.1-security",
     "jimp": "^0.9.3",
     "minimist": ">=0.2.1",

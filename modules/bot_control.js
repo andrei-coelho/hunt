@@ -79,7 +79,7 @@ const busca = (client, nome, nomes) => {
 // salvar os perfis que foram adquiridos na busca
 const salvar_perfis = (slug, objetos) => {
     api.post('perfis/save/'+slug, objetos, (res, status) =>{
-       return; // silence is gold
+       return; // silence here...
     });
 }
 
@@ -157,12 +157,11 @@ module.exports.analise = (client, open = true) => {
         
         var directors = [];
         
-        perfis.forEach(p => directors.push(p.id_fb));
+       // perfis.forEach(p => directors.push(p.id_fb));
         analise_perfis(analise, client.slug, perfis, status => {
             if(status){
                 // se ocorreu tudo bem, deleta a pasta e os arquivos
                 //delete_dir(directors);
-                
             }
             log.save("Serviço: Analise | Cliente: " + client.nome + " - Finalizado com " + (status ? "sucesso" : "problemas"));   
         })
@@ -176,22 +175,35 @@ const analise_perfis = (analise, client_slug, perfis, callback, status = true) =
     var perfil = perfis.shift();
 
     analise.get_intents(perfil.id_fb, intents => {
-     
-        perfil.intents = intents.filter((v, i, a) => a.indexOf(v) === i);
-        perfil.analise = 1;
-
-        api.post("perfis/save_intents/"+client_slug, perfil, response => {
-
-            // se der QUALQUER problema ao tentar salvar algum registro...
-            // o status torna-se false
-            if(response.status != "ok") status = false;
-            if(perfis.length == 0){
+        
+        if(!intents){
+            // altera o perfil para fazer o scrapy novamente
+           if(perfis.length == 0){
                 callback(status);
             } else {
                 analise_perfis(analise, client_slug, perfis, callback, status);
             }
-            
-        })
+
+        } else {
+
+            perfil.intents = intents.filter((v, i, a) => a.indexOf(v) === i);
+            perfil.analise = 1;
+
+            api.post("perfis/save_intents/"+client_slug, perfil, response => {
+
+                // se der QUALQUER problema ao tentar salvar algum registro...
+                // o status torna-se false
+                if(response.status != "ok") status = false;
+                if(perfis.length == 0){
+                    callback(status);
+                } else {
+                    analise_perfis(analise, client_slug, perfis, callback, status);
+                }
+                
+            })
+
+        }
+        
 
     });
 }

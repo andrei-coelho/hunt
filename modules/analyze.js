@@ -16,10 +16,15 @@ module.exports = intents_list => {
           
             generate_images_pb(id_fb, images => {
                 // lê as imagens em preto e branco
-                read_images(id_fb, images, intents => {
-                    // retorna as intenções do perfil
-                    callback(intents)
-                })
+                if(!images){
+                    callback(false);
+                } else {
+                    read_images(id_fb, images, intents => {
+                        // retorna as intenções do perfil
+                        callback(intents)
+                    })
+                }
+                
             })
           
            
@@ -31,8 +36,11 @@ module.exports = intents_list => {
 
 const read_images = (id_fb, images, callback, intents = []) => {
     let img = images.shift();
-    recognize_intent(id_fb, img, intent => {
-        if(intent) intents.push(intent);
+    recognize_intent(id_fb, img, itens => {
+        if(!itens) {
+            console.log("Erro ao tentar identificar as images");
+        }
+        itens.forEach(item => intents.push(item))
         images.length === 0 ?
         callback(intents) :
         read_images(id_fb, images, callback, intents)
@@ -40,33 +48,41 @@ const read_images = (id_fb, images, callback, intents = []) => {
     
 }
 
+const recognize_intent = (id_fb, img, callback, test = 0) => {
+    var image = appRoot + "\\images\\"+id_fb+"\\pb\\" + img;
+    tesseract.recognize(image, options)
+    .then(text => {
+        get(text, intents => callback(intents));
+    })
+    .catch(error => {
+        if(test > 1){
+            console.log(error);
+            callback(false);
+        } else {
+            setTimeout(() => {
+                 recognize_intent(id_fb, img, callback, test + 1);
+            }, 1000)
+        }
+    })
+}
+
 
 const get = (text, callback, avaliado = false) => {
     
+    var ids = [];
+
     intents_module.forEach(item => {
         var reg = RegExp(item.regex,'ig');
         if(reg.test(text)) {
             avaliado = true;
-            callback(item.id);
+            ids.push(item.id)
         }
     });
-    if(!avaliado)
-    callback(false);
+
+    callback(ids);
 };
 
-const recognize_intent = (id_fb, img, callback) => {
-    var image = appRoot + "\\images\\"+id_fb+"\\pb\\" + img;
-    tesseract.recognize(image, options)
-    .then(text => {
-        get(text, intent => {
-            let msg = !intent ? "Não conseguiu identificar uma intenção" : "";
-            callback(intent, msg)
-        });
-    })
-    .catch(error => {
-        callback(false, "ocorreu um erro ao tentar identificar");
-    })
-}
+
 
 
 const generate_images_pb = (id_fb, callback) => {
@@ -75,9 +91,10 @@ const generate_images_pb = (id_fb, callback) => {
         
         if(err){
             // diretório não existe
+            callback(false);
             return;
         }
-        
+
         var imgs = [];
         list.forEach(el => {
             if(/(\.jpg|\.png|\.jpeg)/.test(el)) imgs.push(el)
@@ -88,16 +105,17 @@ const generate_images_pb = (id_fb, callback) => {
         imgs.forEach((item, i) => {
             Jimp.read(dir+item, (err, image) => {
                 image.greyscale().write(dir+"/pb/"+item);
-                if((i + 1) === totalImgs) callback(imgs);
+                if((i + 1) === totalImgs){
+                    callback(imgs)
+                }
             });
         });
-        
     
     });
 }
 
 const options = {
-	l: 'por',
+	lang: 'por',
 	psm: 1
 };
 
