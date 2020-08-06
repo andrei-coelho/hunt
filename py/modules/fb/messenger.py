@@ -20,7 +20,7 @@ def send_message_for(profile, driver):
     time.sleep(3)
     driver.find_element_by_xpath('//a[contains(text(), "Mensagem")]').click()
     time.sleep(2)
-    keyboard.type(profile['msg'])
+    keyboard.type(profile['mensagem'])
     keyboard.press(Key.enter)
     time.sleep(1)
     keyboard.release(Key.enter)

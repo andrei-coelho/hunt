@@ -8,10 +8,10 @@
 var cmd = require('node-cmd'),
     response = require('./response');
 
-module.exports = function(cookie){
+module.exports = function(cookie = false){
 
     var url_fb = "https://www.facebook.com/",
-        cookie = "\""+appRoot+"\\json\\cookies\\"+cookie+"\"",
+        cookie = cookie ? "\""+appRoot+"\\json\\cookies\\"+cookie+"\"": false,
         agent  = "\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36\"", 
         regex  = new RegExp("^[^a-z\.]+$","gi");
 
@@ -27,6 +27,17 @@ module.exports = function(cookie){
             cbk(error, data, stderr)
         });
        
+    }
+
+    var exec_py_file = (file, callback, machine, slug_client) => {
+          
+        var arquivo = appRoot+"\\py\\"+file;
+        var cl = 'python '+arquivo+' \''+machine+'\''+' \''+slug_client+'\'';
+
+        cmd.get(cl, (error, data, stderr) => {
+            callback(error, data, stderr)
+        })
+        
     }
 
     return {
@@ -53,6 +64,7 @@ module.exports = function(cookie){
         },
 
         scrapy : (link, callback) => {
+
             let urlFinal = 
                 regex.test(link) 
                 ? "\""+url_fb+"profile.php?id="+link+"\"" 
@@ -77,6 +89,14 @@ module.exports = function(cookie){
             call_file("friends.js", urlFinal, (error, data, stderr) => {
                 callback(error, response(data), stderr);
             });
+
+        },
+
+        messenger: (callback, machine, slug_client) => {
+
+            exec_py_file("messenger.py", (error, data, stderr) => {
+                callback(error, response(data), stderr);
+            }, machine, slug_client);
 
         },
 

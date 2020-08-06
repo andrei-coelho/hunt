@@ -36,16 +36,16 @@
 *********************************************************************************
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-# python C:\\python-projects\\hunt_messenger\\hunt.py
-
 from modules.fb import login, messenger 
 from modules.helper import api, log
 
-import sys, time
+import sys, time, json
 
 lista         = api.get_list()
 contas        = []
-timer         = 6 # 600 segundos = 10 minutos para cada conta
+timer         = 600 # 600 segundos = 10 minutos para cada conta
+
+total_msgs   = 0
 
 def get_next_account(keyAccount, count = 0):
 
@@ -59,7 +59,7 @@ def get_next_account(keyAccount, count = 0):
 
     if(contas[keyAccount]['keyPerfil'] == len(contas[keyAccount]['perfis'])):
         keyAccount += 1
-        count     += 1
+        count      += 1
         return get_next_account(keyAccount, count)
 
     return [contas[keyAccount], keyAccount]
@@ -88,8 +88,11 @@ if lista:
 
             driver   = login.login(conta['conta'])
             messenger.send_message_for(conta['perfis'][conta['keyPerfil']], driver)
-            conta['keyPerfil'] += 1 
+            api.update_status(conta['perfis'][conta['keyPerfil']]['id'])
+            conta['keyPerfil'] += 1
+            
             time.sleep(timer)
 
         else:break
 
+print(f"#object:{json.dumps({'enviados':total_msgs, 'contas':len(contas)})}#")

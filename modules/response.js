@@ -19,11 +19,13 @@ const generate = stringMsg => {
     let values = stringMsg.match(resp);
     let arrval = [];
     
-    values.forEach(element => {
-        let val = cleanResult(element);
-        arrval.push(val);
-    });
-
+    if(values){
+        values.forEach(element => {
+            let val = cleanResult(element);
+            arrval.push(val);
+        });
+    }
+    
     return createObject(arrval);
     
 }

@@ -3,13 +3,15 @@
 var fs       = require('fs'),
     Path     = require('path'),
     api      = null,
+    conf     = null,
     cli      = require('../modules/hunt_cli'),
     log      = require('../helpers/log'),
     datetime = require('../helpers/datetime'),
     analyze  = require('../modules/analyze');
 
-module.exports.conf = conf => {
-    api      = (require('../modules/api'))(conf);
+module.exports.conf = config => {
+    conf  = config;
+    api   = (require('../modules/api'))(config);
 }
 
 const open_server = (serviceName, cliente, open, mensagem) => {
@@ -137,9 +139,29 @@ const get_posts = (client, list, index, callback) => {
 }
 
 module.exports.friends = (client, open = true) => {
-    open_server("Search", client.nome, open);
+    open_server("Friends", client.nome, open);
     console.log("pegando amigos dos usuarios"); 
 }
+
+module.exports.messenger = (client, open = true) => {
+
+    open_server("Messenger", client.nome, open, "Enviando mensagens aos perfís...");
+    
+    api.get("contas/get_status/"+client.slug, res => {
+
+        log.out(`Enviando mensagens para ${res.mensagens} perfis usando ${res.contas} contas`)
+        
+        cli().messenger((err, res, serr) => {
+            /*
+            let objres = res.obj;
+            log.out(`Foram enviados ${objres.enviados} mensagem usando ${objres.contas}`)
+            */
+           console.log(err, res, serr);
+        }, conf.machine, client.slug)
+
+    })
+}
+
 
 module.exports.analise = (client, open = true) => {
     
@@ -155,15 +177,15 @@ module.exports.analise = (client, open = true) => {
         }
         log.out("Fazendo análise de " + total + " perfis...");
         
-        var directors = [];
+        // var directors = [];
         
        // perfis.forEach(p => directors.push(p.id_fb));
         analise_perfis(analise, client.slug, perfis, status => {
             if(status){
                 // se ocorreu tudo bem, deleta a pasta e os arquivos
-                //delete_dir(directors);
-            }
-            log.save("Serviço: Analise | Cliente: " + client.nome + " - Finalizado com " + (status ? "sucesso" : "problemas"));   
+                // delete_dir(directors);
+            } log.save("Serviço: Analise | Cliente: " + client.nome + " - Finalizado com " + (status ? "sucesso" : "problemas"));
+               
         })
     })
  

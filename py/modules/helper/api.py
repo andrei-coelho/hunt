@@ -1,28 +1,36 @@
-import urllib.request, json 
+import urllib.request, json, sys
+
+machine = sys.argv[1]
+slug_client = sys.argv[2]
 
 totalPerfis = 0
 totalContas = 0
+listaContas = []
 
 '''
     Pega a lista de contas que será usado...
 '''
-with urllib.request.urlopen("http://127.0.0.1/api_test/index.php?type=accounts") as url:
-    listaContas = json.loads(url.read().decode())
+with urllib.request.urlopen("http://127.0.0.1/api_hunt/"+machine+"/contas/get_messengers/"+slug_client+"/") as url:
+    listaContas = json.loads(url.read().decode('utf-8-sig'))
 
 '''
     Configura para cada item da lista as suas respectivas mensagens
-    que serão enviadas paraa cada perfil
+    que serão enviadas para cada perfil
 '''
 if isinstance(listaContas, list):
+
     totalContas = len(listaContas)
     i = 0
+
     for conta in listaContas:
-        with urllib.request.urlopen("http://127.0.0.1/api_test/index.php?type=profiles&account="+conta['email']) as url2:
-            itens = json.loads(url2.read().decode())
+        listaContas[i]['msgs'] = []
+        with urllib.request.urlopen("http://127.0.0.1/api_hunt/"+machine+"/messenger/get_list/"+slug_client+"/"+str(conta['id'])) as url2:
+            itens = json.loads(url2.read().decode('utf-8-sig'))
             for item in itens:
                 listaContas[i]['msgs'].append(item)
                 totalPerfis += 1
             i += 1
+
 else: listaContas = False # se houver erro na requisição da lista
 
 def get_list():
@@ -30,3 +38,7 @@ def get_list():
 
 def get_total():
     return {"contas":totalContas, "perfis":totalPerfis}
+
+def update_status(id_perfil):
+    with urllib.request.urlopen("http://127.0.0.1/api_hunt/"+machine+"/messenger/save_status/"+slug_client+"/"+str(id_perfil)) as url:
+        return True

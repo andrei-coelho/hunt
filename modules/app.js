@@ -10,7 +10,7 @@ var api  = require('../modules/api'),
     // atributos
     count_args     = process.argv.length,
     args           = process.argv,
-    modules        = ['search', 'friends', 'scrapy', 'analise', 'login'];
+    modules        = ['search', 'friends', 'scrapy', 'analise', 'login', 'messenger'];
 
 module.exports = function() {
     
@@ -141,6 +141,7 @@ const help = ()=> {
     module:login          - "faz o login do cliente no fb e salva os cookies"
     module:analise        - "analisa as imagens dos perfis"
     module:search         - "faz a busca de perfis conforme config do cliente"
+    module:messenger      - "envia mensagens geradas pela API"
     `, "info", false);
     log.out(`[client]`, "warning", false)
     log.out(`

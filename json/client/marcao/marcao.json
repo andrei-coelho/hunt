@@ -18,4 +18,5 @@
             "regex":"medicina|m(é|e)dicos?($|\\s)(estrangeiros?|cubanos?|brasileiros?)?|((sistemas?|planos?|postos?)\\s?(de?\\s?)?)?sa(ú|u)des?(\\sp(ú|u)blic(o|a)s?)?|saneamento(b(á|a)sico)?|(^|[^\\w])sus($|[^\\w])|(^|[^\\w])upa($|[^\\w])|(corona\\s?)?v(í|i)rus|(^|[^\\w])covid(-?19)?($|[^\\w])|vacina(ç|c)(ã|a)o|prevenção|(^|[^\\w])AIDS($|[^\\w])|(^|[^\\w])DST($|[^\\w])|(^|[^\\w])SESA($|[^\\w])|a(ç|c)(õ|o)es?\\ssanit(a|á)rias?|secretaria\\smunicipal(\\sd(a|e))?\\ssa(u|ú)de|leitos?(\\sde)\\sUTI($|[^\\w])|enfermeir(a|o)s?|enfermagem|quarentena|fiquem?(\\s)?em(\\s)?casa"
         }
     ]
+    
 }
