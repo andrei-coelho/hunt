@@ -43,7 +43,7 @@ import sys, time, json
 
 lista         = api.get_list()
 contas        = []
-timer         = 600 # 600 segundos = 10 minutos para cada conta
+timer         = 780 # 780 segundos = 13 minutos para cada conta
 
 total_msgs   = 0
 
@@ -89,8 +89,9 @@ if lista:
             driver   = login.login(conta['conta'])
             messenger.send_message_for(conta['perfis'][conta['keyPerfil']], driver)
             api.update_status(conta['perfis'][conta['keyPerfil']]['id'])
+            total_msgs += 1
             conta['keyPerfil'] += 1
-            
+
             time.sleep(timer)
 
         else:break

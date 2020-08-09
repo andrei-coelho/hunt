@@ -24,5 +24,5 @@ def send_message_for(profile, driver):
     keyboard.press(Key.enter)
     time.sleep(1)
     keyboard.release(Key.enter)
-    time.sleep(1)
+    time.sleep(2)
     driver.quit()
