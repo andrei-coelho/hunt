@@ -36,6 +36,9 @@
 *********************************************************************************
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
+# python C:\\node-projects\\hunt\\py\\messenger.py '$2y$10$cxaqVKbhUpLDioU5iLmtYOQBpUkkC' 'marcao'
+
+
 from modules.fb import login, messenger 
 from modules.helper import api, log
 
