@@ -33,7 +33,7 @@ def enter_in_page(chrome, conta):
     cookie.save_cookies(chrome, conta['email'])
     chrome.find_element_by_xpath("//input[@id='email']").send_keys(conta['email'])
     chrome.find_element_by_xpath("//input[@id='pass']").send_keys(conta['senha'])
-    chrome.find_element_by_id("loginbutton").click()
+    chrome.find_element_by_xpath("//button").click()
     time.sleep(2)
     cookie.save_cookies(chrome, conta['email'])
     chrome.quit()

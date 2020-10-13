@@ -36,6 +36,7 @@
 *********************************************************************************
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
+# python messenger.py '$2y$10$cxaqVKbhUpLDioU5iLmtYOQBpUkkC' 'marcao'
 # python C:\\node-projects\\hunt\\py\\messenger.py '$2y$10$cxaqVKbhUpLDioU5iLmtYOQBpUkkC' 'marcao'
 
 
@@ -46,7 +47,7 @@ import sys, time, json
 
 lista         = api.get_list()
 contas        = []
-timer         = 780 # 780 segundos = 13 minutos para cada conta
+timer         = 600 # 600 segundos = 10 minutos para cada conta
 
 total_msgs   = 0
 
@@ -90,8 +91,10 @@ if lista:
             keyConta = account[1] + 1
 
             driver   = login.login(conta['conta'])
-            messenger.send_message_for(conta['perfis'][conta['keyPerfil']], driver)
-            api.update_status(conta['perfis'][conta['keyPerfil']]['id'])
+            isSend   = messenger.send_message_for(conta['perfis'][conta['keyPerfil']], driver)
+            valueOf  = 1 if isSend else 2
+            api.update_status(conta['perfis'][conta['keyPerfil']]['id'], valueOf)
+
             total_msgs += 1
             conta['keyPerfil'] += 1
 

@@ -40,6 +40,7 @@ def get_list():
 def get_total():
     return {"contas":totalContas, "perfis":totalPerfis}
 
-def update_status(id_perfil):
-    with urlopen(Request("http://127.0.0.1/api_hunt/"+machine+"/messenger/save_status/"+slug_client+"/"+str(id_perfil), headers={'User-Agent': 'Mozilla/5.0'})) as url:
+def update_status(id_perfil, typeS = 1):
+    tosave = "save_status" if typeS == 1 else "donot_status"
+    with urlopen(Request("http://127.0.0.1/api_hunt/"+machine+"/messenger/"+tosave+"/"+slug_client+"/"+str(id_perfil), headers={'User-Agent': 'Mozilla/5.0'})) as url:
         return True
